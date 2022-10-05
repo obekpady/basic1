@@ -77,7 +77,7 @@ class PortfolioController extends Controller
         if($request->file('portfolio_image')){
             $image =$request->file('portfolio_image');
             $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension(); //3434363534.jpg
-            Image::make($image)->resize(636,852)->save('upload/portfolio/'.$name_gen);
+            Image::make($image)->resize(1020,520)->save('upload/portfolio/'.$name_gen);
             $save_url = 'upload/portfolio/'.$name_gen;
             
             
@@ -95,6 +95,28 @@ class PortfolioController extends Controller
         
             return redirect()->route('all.portfolio')->with($notification);
         }
+    }
+
+    //Delete Portfolio method
+    public function DeletePortfolio($id){
+        $del = Portfolio::findOrFail($id);
+    $img = $del->portfolio_image;
+    unlink($img);
+    Portfolio::findOrFail($id)->delete();
+    $notification = array(
+    'message' => 'Portfolio deleted successfully',
+    'alert-type' => 'success'
+);
+
+return redirect()->back()->with($notification);
+
+    }//end method
+
+    public function DetailsPortfolio($id){
+
+        $portfolio = Portfolio::findOrFail($id);
+
+        return view('frontend.portfolio_details', compact('portfolio'));
     }
 
 
